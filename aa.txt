@@ -1,0 +1,596 @@
+#!/bin/bash
+
+while true; do
+read -p "Enter the student INDEX NUMBER : " index
+echo "your index number is $index"
+echo
+
+while true; do
+echo "1. student Details"
+echo "2. Continue"
+echo "3. Exit"
+echo
+read -p "Enteryour option : " option
+
+case $option in
+	1)
+		read -p "Last Name : " lname
+		read -p "Registration Number : " regno
+		read -p "Username : " username
+
+		while true; do
+			read -sp "password : " pass
+			echo
+			read -sp "confirm password : " cpass
+			echo
+
+			if [[ "$pass" == "$cpass" ]]; then
+				echo "password match"
+				echo
+				break
+			else
+				echo " password not match . please re enter password"
+			fi
+		done
+		;;
+	2)
+		break
+		echo
+		;;
+	3)
+		echo "exiting....."
+		echo
+		exit 0
+		;;
+	*)
+		echo "invalid option! try again"
+		echo
+esac
+done
+done
+
+Q1 p1
+-------------------------------------------------------------
+
+
+#!/bin/bash
+
+logfile="studentinfo.log"
+
+if [[ -e "$logfile" ]]; then
+	if [[ ! -w "$logfile" ]]; then
+		chmod +w "$logfile"
+	fi
+else
+	touch "$logfile"
+	chmod +w "$logfile"
+fi
+
+while true; do
+read -p "Enter the student INDEX NUMBER : " index
+echo "your index number is $index"
+echo
+
+while true; do
+echo "1. student Details"
+echo "2. Continue"
+echo "3. Exit"
+echo
+read -p "Enteryour option : " option
+
+case $option in
+	1)
+		read -p "Last Name : " lname
+		read -p "Registration Number : " regno
+		read -p "Username : " username
+
+		while true; do
+			read -sp "password : " pass
+			echo
+			read -sp "confirm password : " cpass
+			echo
+
+			if [[ "$pass" == "$cpass" ]]; then
+				echo "password match"
+				echo
+
+				{
+					echo "##############################################"
+					echo "This is Student's details log file "
+					echo "#############################"
+					echo
+					echo "the script was run by $(whoami) on $(date +"%d-%m-%y") at $(date +"%H-%M-%S")"
+					echo "the operating system is $(uname -o)"
+					echo " the working derectry is $(pwd)"
+					echo "shell name is $SHELL"
+					echo "#####################################"
+					echo
+					echo "details of the student $index"
+					echo "$lname"
+					echo "$regno"
+					echo "$username"
+					echo "$pass"
+
+
+
+				} >> "$logfile"
+
+				break
+			else
+				echo " password not match . please re enter password"
+			fi
+		done
+		;;
+	2)
+		break
+		echo
+		;;
+	3)
+		echo "exiting....."
+		echo
+		exit 0
+		;;
+	*)
+		echo "invalid option! try again"
+		echo
+esac
+done
+done
+
+--------------Q1 p2----------------------------------------------------
+
+------------------elec bill--------------------
+
+#!/bin/bash
+
+read -p "Enter units : " units
+
+bill=0
+
+if [[ $units -le 100 ]]; then
+	bill=$((unit * 5))
+elif [[ $units -le 200 ]]; then
+	bill=$((100 * 5 + (units - 100) * 10))
+else
+	bill=$((100 * 5 + 100 * 10 + (units - 200) * 15))
+fi
+
+echo "total bill : Rs. $bill"
+
+
+---------------- let bill--------------------
+
+#!/bin/bash
+
+let x=5+6
+echo $x
+
+let x++
+echo $x
+
+let a=14
+let b=8
+let y=a-b
+echo $y
+
+------------expr -------------------------------
+
+#!/bin/bash
+
+a=10
+b=5
+
+sum=$(expr $a + $b)
+echo "$sum"
+
+let diff=a-b
+echo "$diff"
+
+product=$((a * b))
+echo "$product"
+
+echo "scale=2; 10 / 3" | bc
+
+---------------------- file exit and create bill--------------------
+
+#!/bin/bash
+file_name="student_info.log"
+
+if [[ -e $file_name ]]; then
+
+	echo "file alrady have"
+else
+	echo "file not found"
+	touch "$file_name"
+	echo "file created"
+fi
+
+------------------ file readable or not bill--------------------
+#!/bin/bash
+read -p "enter the file name" filename1
+file_name="student_info.log"
+
+if [[ -w "$file_name" ]]; then
+	echo " file is not readble"
+	chmod +w $file_name
+	echo "now $file_name is writeble"
+	
+else
+	echo "$file_name file is readeble"
+fi
+
+----------------------- menu bill--------------------
+
+#!/bin/bash
+
+while true; do
+	echo "1. show date "
+	echo "2. show current User "
+	echo "3. Exit "
+	read -p "Choose an option : " choice
+
+	case $choice in
+		1) date;;
+		 2) echo "User : $USER";;
+		 3) break;;
+		*)echo "Invalid Option";;
+			
+	esac
+done
+
+-------------------------- min / max p2----------------------------------------------------
+
+#!/bin/bash
+
+nums=(23 50 18 99 77)
+total=0
+
+max=${nums[0]}
+min=${nums[0]}
+
+for n in "${nums[@]}"; do
+	total=$((total + n))
+	(( n > max )) && max=$n
+	(( n > min )) && min=$n
+done
+
+avg=$((total / ${#nums[@]}))
+echo "total: $total, Average: $avg, Max: $max, Min: $min"
+
+------------------- number validaye 0-1000 -------------------------
+
+read -p "Enter a number (0-1000): " num
+while ! [[ "$num" =~ ^[0-9]+$ ]] || [ "$num" -lt 0  ] || [ "$num" -gt 1000 ]; do
+	echo "invalid input . try again "
+	read -p "Enter a number (0-1000): " num
+done
+
+read -p "enter a username " uname 
+
+while ! [[ "$uname" =~ ^[a-z0-9]+$ ]]; do
+	echo " invalid username "
+	read -p "enter a username " uname 
+done
+
+echo " Username accepted : $uname"
+
+
+--------------------array ------------------------
+
+#!/bin/bash
+
+Days=("Monday" "Tuesday" "wendsday" "thursday")
+
+echo "First day : ${Days[0]}"
+
+Days+=("Friday")
+echo "added day:${Days[4]}"
+echo "First day : ${Days[@]}"
+
+------------------ for loop ----------------------------------------------------
+
+#!/bin/bash
+for (( i = 0; i < 10; i++ )); do
+	echo "count is $i"
+done
+
+----------------------- function ----------------------------------------------------- 
+
+#!/bin/bash
+hello(){
+	echo "hello from function"
+	echo "4+5 = 9"
+}
+hello
+
+-------------------------------  while -------------------------------------------------------- 
+
+#!/bin/bash
+count=1
+while [[ $count -le 5 ]]; do
+	echo "count is $count"
+	((count++))
+done
+
+---------------------- append p2----------------------------------------------------
+
+#!/bin/bash
+
+filename="student_info.log"
+
+user=$USER
+date=$(date +"%d-%m-%y")
+time=$(date +"%H-%M-%S")
+OS=$(uname)
+shell=%SHELL
+cwd=$(pwd)
+
+read -p "enter the index " index
+read -p "enter the name " name
+read -p "enter theregistration num " regnum
+read -p "enter the username " username
+read -s -p "enter the password " password
+echo
+read -s -p "confirm password " compassword
+echo
+
+if [[ "$password" = "$compassword" ]]; then
+	echo "password is maching"
+
+	echo "*****************************************" >> "$filename"
+	echo "this is student details in file" >> "$filename"
+	echo "script run by $user on $date at $time" >> "$filename"
+	echo "os : $os" >> "$filename"
+	echo " directry $cwd" >> "$filename"
+	echo "index number $index" >> "$filename"
+	echo "name $name" >> "$filename"
+	echo "reg number $regnum" >> "$filename"
+	echo "username $username" >> "$filename"
+	echo "password is $password" >> "$filename"
+	echo "confirm password $compassword" >> "$filename"
+
+else
+	echo "password is not matching"
+
+	
+fi
+
+----------------  arithmatic p2----------------------------------------------------
+
+#!/bin/bash
+
+calculate_status(){
+	local sum=0
+	local max=0
+	local min=0
+	local count=$#
+	local number=("$@")
+
+	for (( i = 0; i < count; i++ )); do
+		num=${number[$i]}
+		sum=$((sum+num))
+
+		if [[ $i -eq 0 ]]; then
+			max=$num
+			min=$num
+		else
+			if [[ "$num" -gt "$max" ]]; then
+				max=$num
+		fi
+
+		if [[ "$num" -lt "$min" ]]; then
+			min=$num
+		fi
+	fi
+done
+
+avg=$(echo "scale=2; $sum / $count" | bc)
+
+echo "total : $sum"
+echo "Average : $avg"
+echo "Maximum : $max"
+echo "Minimum : $min"
+
+}
+
+read -p " enter 5 numbers seperated with space : " -a values
+calculate_status "${values[@]}"
+
+--------------------- 
+
+1. whoami     Displays the current logged-in user.
+2. pwd 		Prints the current working directory (full path).
+3. ls 
+4. ls -l 	Lists files with detailed information (permissions, owner, size, etc.).
+5. ls -al 	Description: Lists all files including hidden ones (those starting with .) in long format.
+6. cd 		: Changes to the home directory of the current user
+7. cd [directory name] 
+8. cd .. 
+9. echo  
+10. mkdir [directory name] 
+11. rmdir [directory name] 
+12. touch [file name] 
+13. rm [file name] 
+14. vi [file name] 
+15. cat [file name] 		Displays the content of a text file.
+16. cp file 1 file2 		Copies contents of file1 into file2.   cp notes.txt copy.txt
+17. nano [file name] 		Opens the file in the nano editor (user-friendly terminal editor).
+18. gzip [file name] 
+19. gunzip filename.gz 
+20. tar -czvf archive_name.tar.gz file_name
+
+Discuss the outputs of following LINUX terminal commands.
+
+
+
+
+1. uname   	Shows the system’s kernel name.
+2. uname -0   	Displays the operating system
+3. uname -a   	Displays all system information (kernel, hostname, OS, etc.).
+4. uname -m   	Shows the machine hardware name (architecture).
+5. who   	Lists currently logged-in users.
+6. date   	Displays the current date and time.
+7. cal    	Displays the current month's calendar.
+8. hostname   	Displays the name of the current system.
+9. Uptime   	Shows how long the system has been running.
+10. Ps    	Displays running processes for the current user/session
+11. Passwd   
+12. find   	Searches for files in a directory hierarchy.   find . -name "*.txt"
+13. free   
+14. stat [filename]  	 Shows detailed info about a file.
+15. id   	Displays user ID (UID), group ID (GID), and groups.
+16. df  	Reports disk space usage
+17. df -h 
+18. wc -w 
+19. wc -l 
+20. wc -m 
+21. sort [filename] 	 Sorts lines in a file alphabetically.        sort names.txt
+22. Head -n 2 [filename] 
+23. Tail -n 3 [filename] 
+24. clear 
+25. lsblk 
+26.lscpu 
+27. lsusb 
+28.lshw
+
+
+
+=======================================================
+# Read and echo
+read -p "Enter your name: " name
+echo "Hello, $name"
+
+# if statement
+if [ "$name" == "Alice" ]; then
+  echo "Welcome Alice"
+fi
+
+# case
+read -p "Enter a number (1-3): " num
+case $num in
+  1) echo "One";;
+  2) echo "Two";;
+  3) echo "Three";;
+  *) echo "Invalid";;
+esac
+
+# while loop
+count=1
+while [ $count -le 3 ]; do
+  echo "Count: $count"
+  ((count++))
+done
+
+# function
+greet() {
+  echo "Good Day, $1!"
+}
+greet "$name"
+
+
+================================================
+file="data.txt"
+if [ -f "$file" ]; then
+  echo "File exists"
+else
+  echo "File not found"
+fi
+
+================================================
+if [ -r "$file" ]; then
+  echo "File is readable"
+fi
+
+if [ -w "$file" ]; then
+  echo "File is writable"
+fi
+========================================
+
+Append data to log file
+
+echo "User logged in: $USER at $(date)" >> system.log
+
+======================================
+ 4. User Interaction and Validation
+📌 Hide password input
+
+read -s -p "Enter Password: " pass
+echo
+read -s -p "Confirm Password: " confirm
+echo
+
+while [ "$pass" != "$confirm" ]; do
+  echo "Passwords do not match!"
+  read -s -p "Re-enter Password: " pass
+  echo
+  read -s -p "Confirm Password: " confirm
+  echo
+done
+
+==========================================
+
+Validate numeric input (0–1000)
+
+read -p "Enter a number (0-1000): " num
+while ! [[ "$num" =~ ^[0-9]+$ ]] || [ "$num" -lt 0 ] || [ "$num" -gt 1000 ]; do
+  echo "Invalid input. Try again."
+  read -p "Enter a number (0-1000): " num
+done
+
+============================
+
+ Electricity bill calculation (tiered)
+
+
+read -p "Enter units used: " units
+
+bill=0
+if [ $units -le 100 ]; then
+  bill=$((units * 5))
+elif [ $units -le 200 ]; then
+  bill=$((100 * 5 + (units - 100) * 10))
+else
+  bill=$((100 * 5 + 100 * 10 + (units - 200) * 15))
+fi
+
+echo "Total bill: Rs. $bill"
+
+====================================
+
+Total, Average, Max, Min
+
+
+nums=(23 50 18 99 77)
+total=0
+max=${nums[0]}
+min=${nums[0]}
+
+for n in "${nums[@]}"; do
+  total=$((total + n))
+  (( n > max )) && max=$n
+  (( n < min )) && min=$n
+done
+
+avg=$((total / ${#nums[@]}))
+echo "Total: $total, Average: $avg, Max: $max, Min: $min"
+
+======================================
+
+Read, sort, find min/max
+Assume numbers.txt contains:
+
+# Read and sort
+sort -n numbers.txt
+
+# Min value
+min=$(sort -n numbers.txt | head -1)
+echo "Minimum: $min"
+
+# Max value
+max=$(sort -n numbers.txt | tail -1)
+echo "Maximum: $max"
+
+
+==================================
+
+
