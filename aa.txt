@@ -398,64 +398,9 @@ calculate_status "${values[@]}"
 
 --------------------- 
 
-1. whoami     Displays the current logged-in user.
-2. pwd 		Prints the current working directory (full path).
-3. ls 
-4. ls -l 	Lists files with detailed information (permissions, owner, size, etc.).
-5. ls -al 	Description: Lists all files including hidden ones (those starting with .) in long format.
-6. cd 		: Changes to the home directory of the current user
-7. cd [directory name] 
-8. cd .. 
-9. echo  
-10. mkdir [directory name] 
-11. rmdir [directory name] 
-12. touch [file name] 
-13. rm [file name] 
-14. vi [file name] 
-15. cat [file name] 		Displays the content of a text file.
-16. cp file 1 file2 		Copies contents of file1 into file2.   cp notes.txt copy.txt
-17. nano [file name] 		Opens the file in the nano editor (user-friendly terminal editor).
-18. gzip [file name] 
-19. gunzip filename.gz 
-20. tar -czvf archive_name.tar.gz file_name
+#
 
-Discuss the outputs of following LINUX terminal commands.
-
-
-
-
-1. uname   	Shows the system’s kernel name.
-2. uname -0   	Displays the operating system
-3. uname -a   	Displays all system information (kernel, hostname, OS, etc.).
-4. uname -m   	Shows the machine hardware name (architecture).
-5. who   	Lists currently logged-in users.
-6. date   	Displays the current date and time.
-7. cal    	Displays the current month's calendar.
-8. hostname   	Displays the name of the current system.
-9. Uptime   	Shows how long the system has been running.
-10. Ps    	Displays running processes for the current user/session
-11. Passwd   
-12. find   	Searches for files in a directory hierarchy.   find . -name "*.txt"
-13. free   
-14. stat [filename]  	 Shows detailed info about a file.
-15. id   	Displays user ID (UID), group ID (GID), and groups.
-16. df  	Reports disk space usage
-17. df -h 
-18. wc -w 
-19. wc -l 
-20. wc -m 
-21. sort [filename] 	 Sorts lines in a file alphabetically.        sort names.txt
-22. Head -n 2 [filename] 
-23. Tail -n 3 [filename] 
-24. clear 
-25. lsblk 
-26.lscpu 
-27. lsusb 
-28.lshw
-
-
-
-=======================================================
+--------------------------------------------
 # Read and echo
 read -p "Enter your name: " name
 echo "Hello, $name"
@@ -488,7 +433,7 @@ greet() {
 greet "$name"
 
 
-================================================
+--------------------------------------
 file="data.txt"
 if [ -f "$file" ]; then
   echo "File exists"
@@ -591,6 +536,448 @@ max=$(sort -n numbers.txt | tail -1)
 echo "Maximum: $max"
 
 
-==================================
+=========================== e bill to log file =======
+
+#!/bin/bash
+
+read -p " enter customer name : " cname
+read -p " enter units : " units
+
+bill=0
+
+if [[ $units -le 100 ]]; then
+	bill=$((units * 5))
+elif [[ $units -le 200 ]]; then
+	bill=#((100 * 5 + (units - 100) * 10))
+else
+	bill=#((100 * 5 + 100 * 10 + (units - 200) * 15))
+fi
+
+echo "total bill is : Rs. $bill"
+
+bfi="billfile.log"
+
+if [[ -e "$bfi" ]]; then
+	if [[ ! -w "$bfi" ]]; then
+		chmod +w "$bfi"
+	fi
+else
+	touch "$bfi"
+	chmod +w "$bfi"
+fi
+
+{
+	echo "#######################################"
+	echo "#		electricity bill record		"
+	echo "#################################"
+	echo ""
+	echo "Date	: $(date +"%d-%m-%y")"
+	echo "time	: $(date +"%H-%M-%S")"
+	echo ""
+	echo "Bill details....."
+	echo ""
+	echo " customer name	: $cname"
+	echo " units consumed	: $units"
+	echo " total bill	: Rs.$bill"
+
+} >> "$bfi"
 
 
+================= 17 q2 p1 ========================
+
+
+#!/bin/bash
+
+read -p "Enter student count: " st_count
+echo "Student count is $st_count"
+echo
+echo "Enter students' marks below"
+echo
+
+declare -a marks
+
+# Loop to take marks for each student
+for (( i=1; i<=st_count; i++ )); do
+    while true; do
+        read -p "Enter student $i mark: " mark
+
+        if [[ "$mark" == "q" ]]; then
+            echo "Exiting the mark entry process."
+            exit
+        fi
+
+        # Check if the mark is a valid number between 0 and 100
+        if ! [[ "$mark" =~ ^[0-9]+$ ]] || [ "$mark" -lt 0 ] || [ "$mark" -gt 100 ]; then
+            echo "Invalid mark. Please enter a number between 0 and 100."
+        else
+            marks[$i]=$mark
+            break
+        fi
+    done
+done
+
+echo
+echo "Entered Marks:"
+for (( i=1; i<=st_count; i++ )); do
+    echo "Student $i: ${marks[$i]}"
+done
+
+echo
+echo "Grades:"
+for (( i=1; i<=st_count; i++ )); do
+    mark=${marks[$i]}
+    if [ "$mark" -ge 75 ]; then
+        grade="A"
+    elif [ "$mark" -ge 65 ]; then
+        grade="B"
+    elif [ "$mark" -ge 55 ]; then
+        grade="C"
+    elif [ "$mark" -ge 35 ]; then
+        grade="S"
+    else
+        grade="F"
+    fi
+    echo "Student $i: $mark -> Grade $grade"
+done
+
+# Calculate total and average
+sum=0
+for (( i=1; i<=st_count; i++ )); do
+    sum=$((sum + marks[$i]))
+done
+
+echo
+echo "Total Sum: $sum"
+average=$(echo "scale=2; $sum / $st_count" | bc)
+echo "Average: $average"
+
+
+
+
+======================17 q2 p1 modify to store data ===========
+
+#!/bin/bash
+
+# Output files
+> mark-sheet
+> mark-Grades
+> mark-sheet-sorted
+
+marks=()
+
+# Function to assign grade
+gradingT() {
+    if [ $1 -ge 80 ]; then
+        echo "A"
+    elif [ $1 -ge 60 ]; then
+        echo "B"
+    elif [ $1 -ge 40 ]; then
+        echo "C"
+    elif [ $1 -ge 20 ]; then
+        echo "D"
+    elif [ $1 -ge 10 ]; then
+        echo "E"
+    else
+        echo "F"
+    fi
+}
+
+# Read marks
+while true; do
+    read -p "Enter mark (0-100) or 'q' to quit: " mark
+
+    if [[ "$mark" == "q" ]]; then
+        break
+    elif ! [[ "$mark" =~ ^[0-9]+$ ]] || [ "$mark" -lt 0 ] || [ "$mark" -gt 100 ]; then
+        echo "Enter a valid mark"
+        continue
+    fi
+
+    marks+=($mark)
+    echo $mark >> mark-sheet
+    gradingT $mark >> mark-Grades
+done
+
+# Exit if no marks entered
+if [ ${#marks[@]} -eq 0 ]; then
+    echo "No valid marks entered."
+    exit 1
+fi
+
+# Sum and average
+sum=0
+for m in "${marks[@]}"; do
+    sum=$((sum + m))
+done
+
+count=${#marks[@]}
+average=$(echo "scale=2; $sum / $count" | bc)
+
+# Sort and find highest/lowest
+sorted=($(printf "%s\n" "${marks[@]}" | sort -n))
+printf "%s\n" "${sorted[@]}" > mark-sheet-sorted
+highest=${sorted[-1]}
+lowest=${sorted[0]}
+
+# Display results
+echo
+echo "Grades:"
+paste mark-sheet mark-Grades | awk '{print "Mark: "$1" -> Grade: "$2}'
+
+echo
+echo "Total: $sum"
+echo "Average: $average"
+echo "Highest: $highest"
+echo "Lowest: $lowest"
+
+
+
+================= 17 q2 pb =============
+
+===================
+The Fibonacci Sequence is the series of numbers: 0. 1. 1,2,3' 5' "" The sequence is
+ fbund by adding up tire tw,o numbers before it. Write a recursive function to detentine
+ the Fibonacci sequence of 10 numbers. Name the scrlpt as Queq2-B
+===================================
+
+#!/bin/bash
+
+# Recursive Fibonacci function
+fibonacci() {
+    if [ $1 -le 0 ]; then
+        echo 0
+    elif [ $1 -eq 1 ]; then
+        echo 1
+    else
+        echo $(( $(fibonacci $(( $1 - 1 ))) + $(fibonacci $(( $1 - 2 ))) ))
+    fi
+}
+
+# Display the first 10 Fibonacci numbers
+echo "Fibonacci sequence (first 10 numbers):"
+for (( i=0; i<10; i++ )); do
+    echo -n "$(fibonacci $i) "
+done
+
+echo
+
+
+===================16 Q1 ====================
+
+#!/bin/bash
+
+read -p "enter file name : " fname
+read -sp "enter password : " pass
+echo
+
+if [[ ${#pass} -lt 8 ]]; then
+	echo "password is short. minimum 8 characters required. "
+elif ! [[ $pass =~ [A-Za-z] && $pass =~ [0-9] ]]; then
+	echo "password must containt letters and numbers "
+elif ! [[ $pass =~ [A-Z] && $pass =~ [a-z] ]]; then
+	echo "password must containt uppercase and lowercase "
+else
+	echo "password is strong."
+	echo 
+
+	touch "${fname}.txt"
+	echo "file '${fname}.txt' has been creataed "
+fi
+
+
+=================16 Q1 pb =============
+====== check given input file or not or its directry ===========
+
+#!/bin/bash
+
+check_file_or_directry(){
+	read -p "enter input : " input
+	if [ -e "$input" ]; then
+		echo "$input file exists.*****************"
+	else
+		echo "$input file dose not exists."
+	fi
+
+	if [ -d "$input" ]; then
+		echo "$input directory exists.************"
+	else
+		echo "$input directory dose not exists."
+	fi
+}
+check_file_or_directry
+
+===============================================at
+
+#!/bin/bash
+
+logfile="studentinfo.log"
+
+if [[ -e "$logfile" ]]; then
+	if [[ ! -w "$logfile" ]]; then
+		chmod +w "$logfile"
+	fi
+else
+	touch "$logfile"
+	chmod +w "$logfile"
+fi
+
+while true; do
+read -p "Enter the student INDEX NUMBER : " index
+echo "your index number is $index"
+echo
+
+while true; do
+echo "1. student Details"
+echo "2. Continue"
+echo "3. Exit"
+echo
+read -p "Enteryour option : " option
+
+case $option in
+	1)
+		read -p "Last Name : " lname
+		read -p "Registration Number : " regno
+		read -p "Username : " username
+
+		while true; do
+			read -sp "password : " pass
+			echo
+			read -sp "confirm password : " cpass
+			echo
+
+			if [[ "$pass" == "$cpass" ]]; then
+				echo "password match"
+				echo
+
+				{
+					echo "##############################################"
+					echo "This is Student's details log file "
+					echo "#############################"
+					echo
+					echo "the script was run by $(whoami) on $(date +"%d-%m-%y") at $(date +"%H-%M-%S")"
+					echo "the operating system is $(uname -o)"
+					echo " the working derectry is $(pwd)"
+					echo "shell name is $SHELL"
+					echo "#####################################"
+					echo
+					echo "details of the student $index"
+					echo "$lname"
+					echo "$regno"
+					echo "$username"
+					echo "$pass"
+
+
+
+				} >> "$logfile"
+
+				break
+			else
+				echo " password not match . please re enter password"
+			fi
+		done
+		;;
+	2)
+		break
+		echo
+		;;
+	3)
+		echo "exiting....."
+		echo
+		exit 0
+		;;
+	*)
+		echo "invalid option! try again"
+		echo
+esac
+done
+done
+
+==========================
+
+#!/bin/bash
+
+read -p "Enter the student count : " st_count
+echo "Student count is $st_count"
+echo
+echo "***** Enter students marks below ****"
+echo 
+
+declare -a marks
+
+for (( i = 1; i <= st_count; i++ )); do
+	while true; do
+		read -p "Enter the Students $i marks :" marks
+
+		if [ "$marks" -lt 0 ] || [ "$marks " -gt 100 ]; then
+			echo "invalid input . give marks between 0-100"
+		else
+			marks[$i]=$marks
+			break
+		fi
+
+done
+done
+
+echo 
+echo " enter marks "
+for (( i = 1; i <= st_count; i++ )); do
+	echo "student $i = ${marks[Si]}"
+done
+============================================an
+
+
+
+1. whoami     Displays the current logged-in user.
+2. pwd 		Prints the current working directory (full path).
+3. ls 
+4. ls -l 	Lists files with detailed information (permissions, owner, size, etc.).
+5. ls -al 	Description: Lists all files including hidden ones (those starting with .) in long format.
+6. cd 		: Changes to the home directory of the current user
+7. cd [directory name] 
+8. cd .. 
+9. echo  
+10. mkdir [directory name] 
+11. rmdir [directory name] 
+12. touch [file name] 
+13. rm [file name] 
+14. vi [file name] 
+15. cat [file name] 		Displays the content of a text file.
+16. cp file 1 file2 		Copies contents of file1 into file2.   cp notes.txt copy.txt
+17. nano [file name] 		Opens the file in the nano editor (user-friendly terminal editor).
+18. gzip [file name] 
+19. gunzip filename.gz 
+20. tar -czvf archive_name.tar.gz file_name
+
+Discuss the outputs of following LINUX terminal commands.
+
+
+
+
+1. uname   	Shows the system’s kernel name.
+2. uname -0   	Displays the operating system
+3. uname -a   	Displays all system information (kernel, hostname, OS, etc.).
+4. uname -m   	Shows the machine hardware name 
+5. who   	Lists currently logged-in users.
+6. date   	Displays the current date and time.
+7. cal    	Displays the current month's calendar.
+8. hostname   	Displays the name of the current system.
+9. Uptime   	Shows how long the system has been running.
+10. Ps    	Displays running processes for the current user/session
+11. Passwd   
+12. find   	Searches for files in a directory hierarchy.   find . -name "*.txt"
+13. free   
+14. stat [filename]  	 Shows detailed info about a file.
+15. id   	Displays user ID (UID), group ID (GID), and groups.
+16. df  	Reports disk space usage
+17. df -h 
+18. wc -w 
+19. wc -l 
+20. wc -m 
+21. sort [filename] 	 Sorts lines in a file alphabetically.        sort names.txt
+22. Head -n 2 [filename] 
+23. Tail -n 3 [filename] 
+24. clear 
+25. lsblk 
+26.lscpu 
+27. lsusb 
+28.lshw
